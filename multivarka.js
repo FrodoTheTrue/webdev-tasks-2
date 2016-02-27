@@ -23,6 +23,17 @@ var multivarka = {
         this.isNot = true;
         return this;
     },
+    equal: function (data) {
+        var tmpObj = {};
+        if (this.isNot === true) {
+            tmpObj[this.whereString] = { $ne: data };
+            this.isNot = false;
+        } else {
+            tmpObj[this.whereString] = { $eq: data };
+        }
+        this.request = tmpObj;
+        return this;
+    },
     lessThan: function (data) {
         var tmpObj = {};
         if (this.isNot === true) {
