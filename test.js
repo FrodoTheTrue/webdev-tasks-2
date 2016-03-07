@@ -8,9 +8,13 @@ multivarka
     .collection('students')
 
     // Выбираем только те записи, в которых поле `group` равно значению «ПИ-301».
-    .where('group').equal(3)
+    .where('group').equal(2)
+
+    .where('name').equal('Иван')
+
+    .where('name').include([])
 
     // После подготовки, делаем запрос
-    .find(function (data) {
-        console.log(data);
+    .find(function (err, result) {
+        console.log(err, result);
     });

@@ -1,11 +1,23 @@
 'use strict';
 var MongoClient = require('mongodb').MongoClient;
+
 var multivarka = {
     url: '',
     whereString: '',
     collectionName: '',
-    request: '',
     isNot: false,
+    requestPull: {$and: []},
+
+    _requestCreator: function (requestNot, request) {
+        var tmpObj = {};
+        if (this.isNot) {
+            tmpObj[this.whereString] = requestNot;
+            this.isNot = false;
+        } else {
+            tmpObj[this.whereString] = request;
+        }
+        this.requestPull['$and'].push(tmpObj);
+    },
 
     server: function (url) {
         this.url = url;
@@ -24,65 +36,46 @@ var multivarka = {
         return this;
     },
     equal: function (data) {
-        var tmpObj = {};
-        if (this.isNot === true) {
-            tmpObj[this.whereString] = { $ne: data };
-            this.isNot = false;
-        } else {
-            tmpObj[this.whereString] = { $eq: data };
-        }
-        this.request = tmpObj;
+        this._requestCreator({ $ne: data }, { $eq: data });
         return this;
     },
     lessThan: function (data) {
-        var tmpObj = {};
-        if (this.isNot === true) {
-            tmpObj[this.whereString] = { $gte: data };
-            this.isNot = false;
-        } else {
-            tmpObj[this.whereString] = { $lt: data };
-        }
-        this.request = tmpObj;
+        this._requestCreator({ $gte: data }, { $lt: data });
         return this;
     },
     greatThan: function (data) {
-        var tmpObj = {};
-        if (this.isNot === true) {
-            tmpObj[this.whereString] = { $lte: data };
-            this.isNot = false;
-        } else {
-            tmpObj[this.whereString] = { $gt: data };
-        }
-        this.request = tmpObj;
+        this._requestCreator({ $lte: data }, { $gt: data });
         return this;
     },
     include: function (data) {
         var orArray = [];
+        var request;
         for (var i = 0; i < data.length; i++) {
             var tmpObj = {};
             tmpObj[this.whereString] = data[i];
             orArray.push(tmpObj);
         }
-        if (this.isNot === true) {
-            this.request = {
+        if (this.isNot) {
+            request = {
                 $nor: orArray
             };
             this.isNot = false;
         } else {
-            this.request = {
+            request = {
                 $or: orArray
             };
         }
+        this.requestPull['$and'].push(request);
         return this;
     },
     find: function (callback) {
         var columnName = this.whereString;
-        var requestName = this.request;
         var colName = this.collectionName;
-        MongoClient.connect(this.url, function (err, db) {
+        var pull = this.requestPull;
+        MongoClient.connect(thise a nonempty array',.url, function (err, db) {
             var collection = db.collection(colName);
-            var result = collection.find(requestName).toArray(function (err, result) {
-                callback(result);
+            var result = collection.find(pull).toArray(function (err, result) {
+                callback(err, result);
                 db.close();
             });
         });
