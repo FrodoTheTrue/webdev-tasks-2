@@ -12,8 +12,6 @@ multivarka
 
     .where('name').equal('Иван')
 
-    .where('name').include([])
-
     // После подготовки, делаем запрос
     .find(function (err, result) {
         console.log(err, result);
