@@ -72,7 +72,7 @@ var multivarka = {
         var columnName = this.whereString;
         var colName = this.collectionName;
         var pull = this.requestPull;
-        MongoClient.connect(thise a nonempty array',.url, function (err, db) {
+        MongoClient.connect(this.url, function (err, db) {
             var collection = db.collection(colName);
             var result = collection.find(pull).toArray(function (err, result) {
                 callback(err, result);
