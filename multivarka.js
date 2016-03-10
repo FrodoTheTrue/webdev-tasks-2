@@ -4,12 +4,9 @@ var MongoClient = require('mongodb').MongoClient;
 module.exports = new Multivarka();
 
 function Multivarka() {
-    this.url = '',
-    this.whereString = '',
-    this.collectionName = '',
-    this.isNot = false,
-    this.requestPull = {$and: []},
-    this.firstRequest = false,
+    this.isNot = false;
+    this.requestPull = {$and: []};
+    this.firstRequest = false;
 
     this._requestCreator = function (requestNot, request) {
         var tmpObj = {};
