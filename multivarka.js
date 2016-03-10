@@ -1,14 +1,14 @@
 'use strict';
 var MongoClient = require('mongodb').MongoClient;
 
-var multivarka = {
-    url: '',
-    whereString: '',
-    collectionName: '',
-    isNot: false,
-    requestPull: {$and: []},
+module.exports = function Multivarka() {
+    this.url = '',
+    this.whereString = '',
+    this.collectionName = '',
+    this.isNot = false,
+    this.requestPull = {$and: []},
 
-    _requestCreator: function (requestNot, request) {
+    this._requestCreator = function (requestNot, request) {
         var tmpObj = {};
         if (this.isNot) {
             tmpObj[this.whereString] = requestNot;
@@ -19,35 +19,35 @@ var multivarka = {
         this.requestPull['$and'].push(tmpObj);
     },
 
-    server: function (url) {
+    this.server = function (url) {
         this.url = url;
         return this;
     },
-    collection: function (collection) {
+    this.collection = function (collection) {
         this.collectionName = collection;
         return this;
     },
-    where: function (data) {
+    this.where = function (data) {
         this.whereString = data;
         return this;
     },
-    not: function () {
+    this.not = function () {
         this.isNot = true;
         return this;
     },
-    equal: function (data) {
+    this.equal = function (data) {
         this._requestCreator({ $ne: data }, { $eq: data });
         return this;
     },
-    lessThan: function (data) {
+    this.lessThan = function (data) {
         this._requestCreator({ $gte: data }, { $lt: data });
         return this;
     },
-    greatThan: function (data) {
+    this.greatThan = function (data) {
         this._requestCreator({ $lte: data }, { $gt: data });
         return this;
     },
-    include: function (data) {
+    this.include = function (data) {
         var orArray = [];
         var request;
         for (var i = 0; i < data.length; i++) {
@@ -68,7 +68,7 @@ var multivarka = {
         this.requestPull['$and'].push(request);
         return this;
     },
-    find: function (callback) {
+    this.find = function (callback) {
         var columnName = this.whereString;
         var colName = this.collectionName;
         var pull = this.requestPull;
@@ -79,6 +79,5 @@ var multivarka = {
                 db.close();
             });
         });
-    }
+    };
 };
-module.exports = multivarka;

@@ -1,6 +1,8 @@
 'use strict';
+
 var multivarka = require('./multivarka');
-multivarka
+var m1 = new multivarka();
+m1
     // Указываем url для подключения
     .server('mongodb://localhost/urfu-2015')
 
@@ -10,7 +12,7 @@ multivarka
     // Выбираем только те записи, в которых поле `group` равно значению «ПИ-301».
     .where('group').equal(2)
 
-    .where('name').equal('Иван')
+    .where('name').include(['Петр'])
 
     // После подготовки, делаем запрос
     .find(function (err, result) {
