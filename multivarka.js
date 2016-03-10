@@ -9,6 +9,7 @@ function Multivarka() {
     this.collectionName = '',
     this.isNot = false,
     this.requestPull = {$and: []},
+    this.firstRequest = false,
 
     this._requestCreator = function (requestNot, request) {
         var tmpObj = {};
@@ -19,6 +20,7 @@ function Multivarka() {
             tmpObj[this.whereString] = request;
         }
         this.requestPull['$and'].push(tmpObj);
+        this.firstRequest = true;
     },
 
     this.server = function (url) {
@@ -68,14 +70,19 @@ function Multivarka() {
             };
         }
         this.requestPull['$and'].push(request);
+        this.firstRequest = true;
         return this;
     },
     this.find = function (callback) {
         var columnName = this.whereString;
         var colName = this.collectionName;
         var pull = this.requestPull;
+        var firstRequest = this.firstRequest;
         MongoClient.connect(this.url, function (err, db) {
             var collection = db.collection(colName);
+            if (!firstRequest) {
+                pull = {};
+            }
             var result = collection.find(pull).toArray(function (err, result) {
                 callback(err, result);
                 db.close();
