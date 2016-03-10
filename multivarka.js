@@ -1,7 +1,9 @@
 'use strict';
 var MongoClient = require('mongodb').MongoClient;
 
-module.exports = function Multivarka() {
+module.exports = new Multivarka();
+
+function Multivarka() {
     this.url = '',
     this.whereString = '',
     this.collectionName = '',

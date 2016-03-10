@@ -1,8 +1,7 @@
 'use strict';
 
 var multivarka = require('./multivarka');
-var m1 = new multivarka();
-m1
+multivarka
     // Указываем url для подключения
     .server('mongodb://localhost/urfu-2015')
 
